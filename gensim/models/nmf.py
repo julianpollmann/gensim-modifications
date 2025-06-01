@@ -100,6 +100,7 @@ import logging
 
 import numpy as np
 import scipy.sparse
+from scipy.sparse import csc_matrix
 from scipy.stats import halfnorm
 
 from gensim import interfaces
@@ -575,7 +576,7 @@ class Nmf(interfaces.TransformationABC, basemodel.BaseTopicModel):
 
         lencorpus = np.inf
 
-        if isinstance(corpus, scipy.sparse.csc.csc_matrix):
+        if isinstance(corpus, csc_matrix):
             lencorpus = corpus.shape[1]
         else:
             try:
@@ -604,7 +605,7 @@ class Nmf(interfaces.TransformationABC, basemodel.BaseTopicModel):
         chunk_overall_idx = 1
 
         for pass_ in range(passes):
-            if isinstance(corpus, scipy.sparse.csc.csc_matrix):
+            if isinstance(corpus, csc_matrix):
                 grouper = (
                     # Older scipy (0.19 etc) throw an error when slicing beyond the actual sparse array dimensions, so
                     # we clip manually with min() here.
@@ -617,7 +618,7 @@ class Nmf(interfaces.TransformationABC, basemodel.BaseTopicModel):
                 grouper = utils.grouper(corpus, self.chunksize)
 
             for chunk_idx, chunk in enumerate(grouper):
-                if isinstance(corpus, scipy.sparse.csc.csc_matrix):
+                if isinstance(corpus, csc_matrix):
                     v = chunk[:, self.random_state.permutation(chunk.shape[1])]
 
                     chunk_len = v.shape[1]
@@ -730,7 +731,7 @@ class Nmf(interfaces.TransformationABC, basemodel.BaseTopicModel):
         if OLD_SCIPY:
             return (csc.T.dot(dense.T)).T
         else:
-            return scipy.sparse.csc_matrix.dot(dense, csc)
+            return csc_matrix.dot(dense, csc)
 
     def _solveproj(self, v, W, h=None, v_max=None):
         """Update residuals and representation (h) matrices.
