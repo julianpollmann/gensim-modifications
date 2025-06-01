@@ -1103,7 +1103,7 @@ class LdaModel(interfaces.TransformationABC, basemodel.BaseTopicModel):
             The variational bound score calculated for each document.
 
         """
-        score = 0.0
+        score = np.float64(0.0)
         _lambda = self.state.get_lambda()
         Elogbeta = dirichlet_expectation(_lambda)
 
