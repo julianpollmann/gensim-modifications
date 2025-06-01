@@ -133,11 +133,11 @@ def update_dir_prior(prior, N, logphat, rho):
         The updated prior.
 
     """
-    dtype = logphat.dtype
+    dtype = prior.dtype
     gradf = N * (psi(np.sum(prior)) - psi(prior) + logphat)
 
-    c = N * polygamma(1, np.sum(prior)).astype(dtype)
-    q = -N * polygamma(1, prior).astype(dtype)
+    c = N * np.array(polygamma(1, np.sum(prior, dtype=dtype)), dtype=dtype)
+    q = -N * np.array(polygamma(1, prior), dtype=dtype)
 
     b = np.sum(gradf / q) / (1 / c + np.sum(1 / q))
 
